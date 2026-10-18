@@ -8,6 +8,11 @@ class GameState(Enum):
     QUIT = 2
 
 
+class DinoState(Enum):
+    ON_GROUND = 0
+    IN_AIR = 1
+
+
 FPS = 600
 
 
@@ -20,6 +25,7 @@ DINO_HEIGHT = HEIGHT // 5
 GROUND_Y = 200
 
 GRAVITY = 2000
+JUMP_VELO = -700
 
 
 def main() -> None:
@@ -29,23 +35,31 @@ def main() -> None:
     clock = pygame.time.Clock()
     dino = pygame.Rect(DINO_WIDTH * 2, 0, DINO_WIDTH, DINO_HEIGHT)
     dino.bottom = GROUND_Y - 100
+    dino_pos = DinoState.ON_GROUND
 
     vel_y = 0.0
     y = float(dino.y)
     while state != GameState.QUIT:
         dt = clock.tick(FPS) / 1000
         for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                state = GameState.QUIT
+            match event.type:
+                case pygame.QUIT:
+                    state = GameState.QUIT
+                case pygame.KEYDOWN:
+                    if event.key == pygame.K_SPACE and dino_pos == DinoState.ON_GROUND:
+                        print("test")
+                        dino_pos = DinoState.IN_AIR
+                        vel_y = JUMP_VELO
+
+        vel_y += GRAVITY * dt
+        y += vel_y * dt
+        dino.y = round(y)
 
         if dino.bottom >= GROUND_Y:
             dino.bottom = GROUND_Y
             y = dino.y
             vel_y = 0
-
-        vel_y += GRAVITY * dt
-        y += vel_y * dt
-        dino.y = round(y)
+            dino_pos = DinoState.ON_GROUND
 
         screen.fill("gray")
         pygame.draw.line(screen, "black", (0, GROUND_Y), (WIDTH, GROUND_Y), 2)
