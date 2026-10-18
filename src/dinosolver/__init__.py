@@ -50,7 +50,7 @@ def reset_dino(dino: pygame.FRect):
 def move_dino(dino: pygame.FRect, dt: float):
     State.dino_velo += GRAVITY * dt
     State.dino_y += State.dino_velo * dt
-    dino.y = round(State.dino_y)
+    dino.y = State.dino_y
 
     if dino.bottom >= GROUND_Y:
         reset_dino(dino)
@@ -71,7 +71,7 @@ def reset_cactus(cactus: pygame.FRect, i: int):
 def move_cactus(i: int, cactus: pygame.FRect, dt: float):
 
     State.obstacles[i].x -= SPEED * dt
-    cactus.x = round(State.obstacles[i].x)
+    cactus.x = State.obstacles[i].x
 
     if cactus.right <= 0:
         reset_cactus(cactus, i)
