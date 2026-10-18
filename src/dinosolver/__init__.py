@@ -29,8 +29,8 @@ def main() -> None:
     
     vel_y = 0.0
     y = float(dino.y)
-    dt = 0
     while state != GameState.QUIT:
+        dt = clock.tick(60) / 1000
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 state = GameState.QUIT
@@ -41,15 +41,16 @@ def main() -> None:
             vel_y = 0
             
 
+        vel_y += GRAVITY * dt
+        y += vel_y * dt
+        dino.y = round(y)
+
+
         screen.fill("gray")
         pygame.draw.line(screen, "black", (0, GROUND_Y), (WIDTH, GROUND_Y), 2)
         pygame.draw.rect(screen, "red", dino)
         pygame.display.flip()
-        dt = clock.tick(60) / 1000
         
-        vel_y += GRAVITY * dt
-        y += vel_y * dt
-        dino.y = round(y)
 
     pygame.quit()
     print("Hello from dinosolver!")
