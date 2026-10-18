@@ -22,10 +22,13 @@ HEIGHT = 300
 DINO_WIDTH = WIDTH // 20
 DINO_HEIGHT = HEIGHT // 5
 
+CACTUS_HEIGHT = HEIGHT // 6
+
 GROUND_Y = 200
 
 GRAVITY = 2000
 JUMP_VELO = -700
+SPEED= 300
 
 
 def main() -> None:
@@ -33,12 +36,19 @@ def main() -> None:
     pygame.init()
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     clock = pygame.time.Clock()
+
     dino = pygame.Rect(DINO_WIDTH * 2, 0, DINO_WIDTH, DINO_HEIGHT)
     dino.bottom = GROUND_Y - 100
     dino_pos = DinoState.ON_GROUND
 
     vel_y = 0.0
     y = float(dino.y)
+
+    cactus = pygame.Rect(WIDTH, 0, DINO_WIDTH, CACTUS_HEIGHT)
+    cactus.bottom = GROUND_Y
+
+    x = float(cactus.x)
+
     while state != GameState.QUIT:
         dt = clock.tick(FPS) / 1000
         for event in pygame.event.get():
@@ -61,9 +71,21 @@ def main() -> None:
             vel_y = 0
             dino_pos = DinoState.ON_GROUND
 
+        x -= SPEED * dt
+        cactus.x = round(x)
+
+        if cactus.right <= 0:
+            cactus.x = WIDTH
+            x = cactus.x
+
         screen.fill("gray")
+
         pygame.draw.line(screen, "black", (0, GROUND_Y), (WIDTH, GROUND_Y), 2)
+
         pygame.draw.rect(screen, "red", dino)
+
+        pygame.draw.rect(screen, "green", cactus)
+
         pygame.display.flip()
 
     pygame.quit()
