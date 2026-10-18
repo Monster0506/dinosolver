@@ -8,21 +8,21 @@ class GameState(Enum):
     ENDED = 2
 
 
-
 WIDTH = 800
-HEIGHT= 300
+HEIGHT = 300
 
 DINO_WIDTH = WIDTH // 20
-DINO_HEIGHT= HEIGHT // 5
+DINO_HEIGHT = HEIGHT // 5
 
 GROUND_Y = 200
+
 
 def main() -> None:
     state = GameState.RUNNING
     pygame.init()
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     clock = pygame.time.Clock()
-    dino = pygame.Rect(0+DINO_WIDTH*2,10, DINO_WIDTH, DINO_HEIGHT)
+    dino = pygame.Rect(0 + DINO_WIDTH * 2, 10, DINO_WIDTH, DINO_HEIGHT)
     dino.bottom = GROUND_Y
     while state != GameState.ENDED:
         for event in pygame.event.get():
