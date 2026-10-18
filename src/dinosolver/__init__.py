@@ -38,7 +38,6 @@ class State:
     dino_y: float = 0.0
     dino_velo: float = 0.0
     obstacles: list[pygame.FRect] = []
-    # cactus_xs: list[float] = []
 
 
 def reset_dino(dino: pygame.FRect):
@@ -63,7 +62,7 @@ def jump():
 
 
 def reset_cactus(cactus: pygame.FRect, i: int):
-    rightmost = max(State.obstacles, key=lambda o : o.x)
+    rightmost = max(State.obstacles, key=lambda o: o.x)
     spawn_loc = max(WIDTH, rightmost.x) + randint(300, 600)
     cactus.x = spawn_loc
     State.obstacles[i].x = cactus.x
@@ -86,8 +85,6 @@ def draw(screen: pygame.Surface, dino: pygame.FRect):
     for i in range(len(State.obstacles)):
         pygame.draw.rect(screen, "green", State.obstacles[i])
 
-    pygame.display.flip()
-
 
 def main() -> None:
     pygame.init()
@@ -106,7 +103,6 @@ def main() -> None:
     State.obstacles.append(cactus)
     State.obstacles.append(cactus2)
 
-
     while State.game_state != GameState.QUIT:
         dt = clock.tick(FPS) / 1000
         for event in pygame.event.get():
@@ -120,8 +116,8 @@ def main() -> None:
                     ):
                         jump()
                     elif event.key == pygame.K_q:
-                         State.game_state = GameState.QUIT
-                    
+                        State.game_state = GameState.QUIT
+
                 case _:
                     pass
 
@@ -131,6 +127,7 @@ def main() -> None:
             move_cactus(i, State.obstacles[i], dt)
 
         draw(screen, dino)
+        pygame.display.flip()
 
     pygame.quit()
     print("Hello from dinosolver!")
