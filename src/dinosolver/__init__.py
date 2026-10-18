@@ -29,7 +29,6 @@ GROUND_Y = 200
 
 GRAVITY = 2000
 JUMP_VELO = -700
-SPEED = 300
 
 
 class State:
@@ -38,6 +37,7 @@ class State:
     dino_y: float = 0.0
     dino_velo: float = 0.0
     obstacles: list[pygame.FRect] = []
+    SPEED: int = 300
 
 
 def reset_dino(dino: pygame.FRect):
@@ -70,7 +70,7 @@ def reset_cactus(cactus: pygame.FRect, i: int):
 
 def move_cactus(i: int, cactus: pygame.FRect, dt: float):
 
-    State.obstacles[i].x -= SPEED * dt
+    State.obstacles[i].x -= State.SPEED * dt
     cactus.x = State.obstacles[i].x
 
     if cactus.right <= 0:
