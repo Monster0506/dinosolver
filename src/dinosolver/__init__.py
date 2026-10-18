@@ -14,7 +14,7 @@ class DinoState(Enum):
     IN_AIR = 1
 
 
-FPS = 600
+FPS = 60
 
 
 WIDTH = 800
@@ -86,24 +86,8 @@ def draw(screen: pygame.Surface, dino: pygame.FRect):
         pygame.draw.rect(screen, "green", State.obstacles[i])
 
 
-def main() -> None:
-    pygame.init()
-    screen = pygame.display.set_mode((WIDTH, HEIGHT))
-    clock = pygame.time.Clock()
-
-    dino = pygame.FRect(DINO_WIDTH * 2, 0, DINO_WIDTH, DINO_HEIGHT)
-    dino.bottom = GROUND_Y - 100
-
-    cactus = pygame.FRect(WIDTH, 0, DINO_WIDTH, CACTUS_HEIGHT)
-    cactus.bottom = GROUND_Y
-
-    cactus2 = pygame.FRect(WIDTH + 300, 0, DINO_WIDTH, CACTUS_HEIGHT)
-    cactus2.bottom = GROUND_Y
-
-    State.obstacles.append(cactus)
-    State.obstacles.append(cactus2)
-
-    while State.game_state != GameState.QUIT:
+def play(dino: pygame.FRect, screen: pygame.Surface, clock: pygame.Clock):
+    while State.game_state == GameState.RUNNING:
         dt = clock.tick(FPS) / 1000
         for event in pygame.event.get():
             match event.type:
@@ -121,6 +105,10 @@ def main() -> None:
                 case _:
                     pass
 
+        if any(dino.colliderect(o) for o in State.obstacles):
+            State.game_state = GameState.GAME_OVER
+            continue
+
         move_dino(dino, dt)
 
         for i in range(len(State.obstacles)):
@@ -128,6 +116,50 @@ def main() -> None:
 
         draw(screen, dino)
         pygame.display.flip()
+
+
+def initalize():
+    dino = pygame.FRect(DINO_WIDTH * 2, 0, DINO_WIDTH, DINO_HEIGHT)
+    dino.bottom = GROUND_Y - 100
+
+    cactus = pygame.FRect(WIDTH, 0, DINO_WIDTH, CACTUS_HEIGHT)
+    cactus.bottom = GROUND_Y
+
+    cactus2 = pygame.FRect(WIDTH + 300, 0, DINO_WIDTH, CACTUS_HEIGHT)
+    cactus2.bottom = GROUND_Y
+    State.dino_velo = 0
+    State.dino_pos = DinoState.ON_GROUND
+    State.obstacles.clear()
+    State.obstacles.append(cactus)
+    State.obstacles.append(cactus2)
+    return dino
+
+
+def main() -> None:
+    pygame.init()
+    screen = pygame.display.set_mode((WIDTH, HEIGHT))
+    clock = pygame.time.Clock()
+    dino = initalize()
+
+    while True:
+        if State.game_state == GameState.QUIT:
+            break
+        for event in pygame.event.get():
+            match event.type:
+                case pygame.QUIT:
+                    State.game_state = GameState.QUIT
+                case pygame.KEYDOWN:
+                    if (
+                        event.key == pygame.K_SPACE
+                        and State.game_state == GameState.GAME_OVER
+                    ):
+                        dino = initalize()
+                        State.game_state = GameState.RUNNING
+                        break
+                    elif event.key == pygame.K_q:
+                        State.game_state = GameState.QUIT
+
+        play(dino, screen, clock)
 
     pygame.quit()
     print("Hello from dinosolver!")
