@@ -119,6 +119,9 @@ def main() -> None:
                         and State.dino_pos == DinoState.ON_GROUND
                     ):
                         jump()
+                    elif event.key == pygame.K_q:
+                         State.game_state = GameState.QUIT
+                    
                 case _:
                     pass
 
