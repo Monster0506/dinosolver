@@ -1,5 +1,6 @@
 import pygame
 from enum import Enum
+from random import randint
 
 
 class GameState(Enum):
@@ -61,7 +62,9 @@ def jump():
 
 
 def reset_cactus(cactus: pygame.Rect, i: int):
-    cactus.x = WIDTH
+    rightmost = max(State.cactus_xs)
+    spawn_loc = max(WIDTH, rightmost) + randint(300, 600)
+    cactus.x = spawn_loc
     State.cactus_xs[i] = cactus.x
 
 
