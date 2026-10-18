@@ -36,7 +36,53 @@ class State:
     dino_pos: DinoState = DinoState.ON_GROUND
     dino_y: float = 0.0
     dino_velo: float = 0.0
-    cactus_xs: list[float] = [0.0]
+    cactus_xs: list[float] = []
+
+
+def reset_dino(dino: pygame.Rect):
+    dino.bottom = GROUND_Y
+    State.dino_y = dino.y
+    State.dino_velo = 0
+    State.dino_pos = DinoState.ON_GROUND
+
+
+def move_dino(dino: pygame.Rect, dt: float):
+    State.dino_velo += GRAVITY * dt
+    State.dino_y += State.dino_velo * dt
+    dino.y = round(State.dino_y)
+
+    if dino.bottom >= GROUND_Y:
+        reset_dino(dino)
+
+
+def jump():
+    State.dino_pos = DinoState.IN_AIR
+    State.dino_velo = JUMP_VELO
+
+
+def reset_cactus(cactus: pygame.Rect, i: int):
+    cactus.x = WIDTH
+    State.cactus_xs[i] = cactus.x
+
+
+def move_cactus(i: int, cactus: pygame.Rect, dt: float):
+
+    State.cactus_xs[i] -= SPEED * dt
+    cactus.x = round(State.cactus_xs[i])
+
+    if cactus.right <= 0:
+        reset_cactus(cactus, i)
+
+
+def draw(screen: pygame.Surface, dino: pygame.Rect, obstacles: list[pygame.Rect]):
+    screen.fill("gray")
+    pygame.draw.line(screen, "black", (0, GROUND_Y), (WIDTH, GROUND_Y), 2)
+    pygame.draw.rect(screen, "red", dino)
+
+    for i in range(len(obstacles)):
+        pygame.draw.rect(screen, "green", obstacles[i])
+
+    pygame.display.flip()
 
 
 def main() -> None:
@@ -46,12 +92,20 @@ def main() -> None:
 
     dino = pygame.Rect(DINO_WIDTH * 2, 0, DINO_WIDTH, DINO_HEIGHT)
     dino.bottom = GROUND_Y - 100
+    obstacles: list[pygame.Rect] = []
 
     cactus = pygame.Rect(WIDTH, 0, DINO_WIDTH, CACTUS_HEIGHT)
     cactus.bottom = GROUND_Y
-    
-    obstacles = [cactus]
-    
+
+    cactus2 = pygame.Rect(WIDTH + 300, 0, DINO_WIDTH, CACTUS_HEIGHT)
+    cactus2.bottom = GROUND_Y
+
+    obstacles.append(cactus)
+    obstacles.append(cactus2)
+
+    for o in obstacles:
+        State.cactus_xs.append(o.x)
+
     while State.game_state != GameState.QUIT:
         dt = clock.tick(FPS) / 1000
         for event in pygame.event.get():
@@ -63,37 +117,16 @@ def main() -> None:
                         event.key == pygame.K_SPACE
                         and State.dino_pos == DinoState.ON_GROUND
                     ):
-                        State.dino_pos = DinoState.IN_AIR
-                        State.dino_velo = JUMP_VELO
+                        jump()
+                case _:
+                    pass
 
-        State.dino_velo += GRAVITY * dt
-        State.dino_y += State.dino_velo * dt
-        dino.y = round(State.dino_y)
-
-        if dino.bottom >= GROUND_Y:
-            dino.bottom = GROUND_Y
-            State.dino_y = dino.y
-            State.dino_velo = 0
-            State.dino_pos = DinoState.ON_GROUND
+        move_dino(dino, dt)
 
         for i in range(len(State.cactus_xs)):
-            
-            State.cactus_xs[i] -= SPEED * dt
-            obstacles[i].x = round(State.cactus_xs[i])
+            move_cactus(i, obstacles[i], dt)
 
-            if cactus.right <= 0:
-                cactus.x = WIDTH
-                State.cactus_xs[i] = obstacles[i].x
-
-        screen.fill("gray")
-
-        pygame.draw.line(screen, "black", (0, GROUND_Y), (WIDTH, GROUND_Y), 2)
-
-        pygame.draw.rect(screen, "red", dino)
-
-        pygame.draw.rect(screen, "green", cactus)
-
-        pygame.display.flip()
+        draw(screen, dino, obstacles)
 
     pygame.quit()
     print("Hello from dinosolver!")
