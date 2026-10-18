@@ -8,49 +8,49 @@ class GameState(Enum):
     QUIT = 2
 
 
+FPS = 600
+
 
 WIDTH = 800
-HEIGHT= 300
+HEIGHT = 300
 
 DINO_WIDTH = WIDTH // 20
-DINO_HEIGHT= HEIGHT // 5
+DINO_HEIGHT = HEIGHT // 5
 
 GROUND_Y = 200
 
 GRAVITY = 2000
+
 
 def main() -> None:
     state = GameState.RUNNING
     pygame.init()
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     clock = pygame.time.Clock()
-    dino = pygame.Rect(0+DINO_WIDTH*2,10, DINO_WIDTH, DINO_HEIGHT)
+    dino = pygame.Rect(DINO_WIDTH * 2, 0, DINO_WIDTH, DINO_HEIGHT)
     dino.bottom = GROUND_Y - 100
-    
+
     vel_y = 0.0
     y = float(dino.y)
     while state != GameState.QUIT:
-        dt = clock.tick(60) / 1000
+        dt = clock.tick(FPS) / 1000
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 state = GameState.QUIT
-                
+
         if dino.bottom >= GROUND_Y:
             dino.bottom = GROUND_Y
             y = dino.y
             vel_y = 0
-            
 
         vel_y += GRAVITY * dt
         y += vel_y * dt
         dino.y = round(y)
 
-
         screen.fill("gray")
         pygame.draw.line(screen, "black", (0, GROUND_Y), (WIDTH, GROUND_Y), 2)
         pygame.draw.rect(screen, "red", dino)
         pygame.display.flip()
-        
 
     pygame.quit()
     print("Hello from dinosolver!")
