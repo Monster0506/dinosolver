@@ -7,13 +7,14 @@ import pygame
 
 from dinosolver import (
     FPS,
-    SPAWN_SCALE_SPEED,
     GRAVITY,
     GROUND_Y,
     JUMP_VELO,
+    SPAWN_SCALE_SPEED,
     DinoState,
     GameState,
     State,
+    draw,
     initalize,
     jump,
     move_cactus,
@@ -116,3 +117,6 @@ class DinoEnv:
             obstacles=tuple(_rect(o) for o in State.obstacles),
             score=State.score,
         )
+
+    def render(self, screen: pygame.Surface) -> None:
+        draw(screen, self._dino)
