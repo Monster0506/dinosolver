@@ -31,8 +31,7 @@ GRAVITY = 2000
 JUMP_VELO = -700
 
 SPEED_STEP = 10
-MAX_SPEED = 4000
-JUMP_SCALE_SPEED = 800
+MAX_SPEED = 800
 
 
 class State:
@@ -61,13 +60,9 @@ def move_dino(dino: pygame.FRect, dt: float):
         reset_dino(dino)
 
 
-def jump_velo() -> float:
-    return JUMP_VELO * max(1, State.speed / JUMP_SCALE_SPEED)
-
-
 def jump():
     State.dino_pos = DinoState.IN_AIR
-    State.dino_velo = jump_velo()
+    State.dino_velo = JUMP_VELO
 
 
 def reset_cactus(cactus: pygame.FRect, i: int):
