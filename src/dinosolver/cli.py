@@ -38,9 +38,7 @@ def _parse() -> tuple[argparse.Namespace, Config]:
     return args, cfg
 
 
-def _headless(
-    workers: int, cfg: Config, on_gen: Callable[[GenStats], None]
-) -> None:
+def _headless(workers: int, cfg: Config, on_gen: Callable[[GenStats], None]) -> None:
     evaluator = Evaluator(workers)
     try:
         train(evaluator, cfg, on_gen, threading.Event())
@@ -78,7 +76,9 @@ def main() -> None:
 
     def on_gen(s: GenStats) -> None:
         np.save(args.out, s.params)
-        print(f"gen {s.gen:4d}  best {s.best:8.2f}  mean {s.mean:7.2f}  score {s.score}")
+        print(
+            f"gen {s.gen:4d}  best {s.best:8.2f}  mean {s.mean:7.2f}  score {s.score}"
+        )
 
     if args.display == Display.NONE:
         _headless(args.workers, cfg, on_gen)
