@@ -9,14 +9,14 @@ from dinosolver import (
     FPS,
     GRAVITY,
     GROUND_Y,
-    JUMP_VELO,
-    MAX_SPEED,
+    JUMP_SCALE_SPEED,
     WIDTH,
     DinoState,
     GameState,
     State,
     initalize,
     jump,
+    jump_velo,
     move_cactus,
     move_dino,
     reset_dino,
@@ -24,7 +24,7 @@ from dinosolver import (
 
 DT = 1 / FPS
 OBS_SIZE = 5
-JUMP_APEX = JUMP_VELO**2 / (2 * GRAVITY)
+SPEED_REF = JUMP_SCALE_SPEED
 NO_OBSTACLE = 2.0
 
 Rect = tuple[float, float, float, float]
@@ -94,6 +94,8 @@ class DinoEnv:
 
     def observe(self) -> np.ndarray:
         dino = self._dino
+        v0 = abs(jump_velo())
+        apex = v0**2 / (2 * GRAVITY)
         ahead = sorted(
             (o for o in State.obstacles if o.right > dino.left), key=lambda o: o.x
         )
@@ -104,9 +106,9 @@ class DinoEnv:
             [
                 dx[0],
                 dx[1],
-                (GROUND_Y - dino.bottom) / JUMP_APEX,
-                State.dino_velo / abs(JUMP_VELO),
-                State.speed / MAX_SPEED,
+                (GROUND_Y - dino.bottom) / apex,
+                State.dino_velo / v0,
+                State.speed / SPEED_REF,
             ]
         )
 
