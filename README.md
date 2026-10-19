@@ -22,3 +22,5 @@ The best genome of each generation is saved to `--out` (`best.npy`). Press `q` i
 | `render.py`, `viewer.py` | Draw snapshots with the game's `draw()` into one window |
 
 Episodes are capped at 300 s of game time. Workers run unthrottled, so tiles are a sampled fast-forward, not real time.
+
+Speed ramps 10 px/s per cactus up to `MAX_SPEED` (4000, below the 4800 where a cactus can skip past the dino in one frame). Above `SPAWN_SCALE_SPEED` (800), cactus spawn distance and gap scale with speed, so obstacle timing in seconds stays constant and a perfect player survives at any speed. Observations are time to contact for the same reason.
