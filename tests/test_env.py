@@ -16,7 +16,8 @@ def test_start_ignores_previous_episode():
 
     fresh = DinoEnv(1)
 
-    assert fresh._dino.bottom == GROUND_Y
+    _, y, _, h = fresh.snapshot().dino
+    assert y + h == GROUND_Y
     assert fresh.frames == 0
     assert not fresh.over
 

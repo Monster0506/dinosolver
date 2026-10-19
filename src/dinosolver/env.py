@@ -53,8 +53,8 @@ class DinoEnv:
     """
 
     def __init__(self, seed: int) -> None:
-        self._frames = 0
-        self._dino = self._start(seed)
+        self._frames: int = 0
+        self._dino: pygame.FRect = self._start(seed)
 
     @staticmethod
     def _start(seed: int) -> pygame.FRect:
