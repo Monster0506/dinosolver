@@ -37,7 +37,8 @@ class State:
     dino_y: float = 0.0
     dino_velo: float = 0.0
     obstacles: list[pygame.FRect] = []
-    SPEED: int = 300
+    speed: int = 300
+    score: int = 0
 
 
 def reset_dino(dino: pygame.FRect):
@@ -70,20 +71,24 @@ def reset_cactus(cactus: pygame.FRect, i: int):
 
 def move_cactus(i: int, cactus: pygame.FRect, dt: float):
 
-    State.obstacles[i].x -= State.SPEED * dt
+    State.obstacles[i].x -= State.speed * dt
     cactus.x = State.obstacles[i].x
 
     if cactus.right <= 0:
+        State.score += 1
         reset_cactus(cactus, i)
 
 
 def draw(screen: pygame.Surface, dino: pygame.FRect):
-    screen.fill("gray")
+    screen.fill("lightblue")
+    score_font = pygame.font.Font(None, 15)
+    score_text = score_font.render(f"{State.score}", True, "black")
     pygame.draw.line(screen, "black", (0, GROUND_Y), (WIDTH, GROUND_Y), 2)
     pygame.draw.rect(screen, "red", dino)
 
     for i in range(len(State.obstacles)):
         pygame.draw.rect(screen, "green", State.obstacles[i])
+    screen.blit(score_text, (15, 15))
 
 
 def play(dino: pygame.FRect, screen: pygame.Surface, clock: pygame.Clock):
@@ -132,6 +137,8 @@ def initalize():
     State.obstacles.clear()
     State.obstacles.append(cactus)
     State.obstacles.append(cactus2)
+    State.speed = 300
+    State.score = 0
     return dino
 
 
