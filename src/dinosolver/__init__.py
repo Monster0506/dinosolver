@@ -30,6 +30,9 @@ GROUND_Y = 200
 GRAVITY = 2000
 JUMP_VELO = -700
 
+SPEED_STEP = 10
+MAX_SPEED = 800
+
 
 class State:
     game_state: GameState = GameState.RUNNING
@@ -76,6 +79,7 @@ def move_cactus(i: int, cactus: pygame.FRect, dt: float):
 
     if cactus.right <= 0:
         State.score += 1
+        State.speed = min(State.speed + SPEED_STEP, MAX_SPEED)
         reset_cactus(cactus, i)
 
 
