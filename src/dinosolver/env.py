@@ -7,7 +7,7 @@ import pygame
 
 from dinosolver import (
     FPS,
-    GAP_SCALE_SPEED,
+    SPAWN_SCALE_SPEED,
     GRAVITY,
     GROUND_Y,
     JUMP_VELO,
@@ -106,7 +106,7 @@ class DinoEnv:
                 dx[1],
                 (GROUND_Y - dino.bottom) / JUMP_APEX,
                 State.dino_velo / abs(JUMP_VELO),
-                State.speed / GAP_SCALE_SPEED,
+                State.speed / SPAWN_SCALE_SPEED,
             ]
         )
 
