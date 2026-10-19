@@ -31,7 +31,8 @@ GRAVITY = 2000
 JUMP_VELO = -700
 
 SPEED_STEP = 10
-MAX_SPEED = 800
+MAX_SPEED = 4000
+GAP_SCALE_SPEED = 800
 
 
 class State:
@@ -67,7 +68,8 @@ def jump():
 
 def reset_cactus(cactus: pygame.FRect, i: int):
     rightmost = max(State.obstacles, key=lambda o: o.x)
-    spawn_loc = max(WIDTH, rightmost.x) + randint(300, 600)
+    gap = randint(300, 600) * max(1, State.speed / GAP_SCALE_SPEED)
+    spawn_loc = max(WIDTH, rightmost.x) + gap
     cactus.x = spawn_loc
     State.obstacles[i].x = cactus.x
 
