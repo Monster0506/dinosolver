@@ -7,11 +7,10 @@ import pygame
 
 from dinosolver import (
     FPS,
+    GAP_SCALE_SPEED,
     GRAVITY,
     GROUND_Y,
     JUMP_VELO,
-    MAX_SPEED,
-    WIDTH,
     DinoState,
     GameState,
     State,
@@ -25,6 +24,7 @@ from dinosolver import (
 DT = 1 / FPS
 OBS_SIZE = 5
 JUMP_APEX = JUMP_VELO**2 / (2 * GRAVITY)
+# Seconds, not pixels: obstacle timing is what stays constant as speed ramps.
 NO_OBSTACLE = 2.0
 
 Rect = tuple[float, float, float, float]
@@ -97,7 +97,7 @@ class DinoEnv:
         ahead = sorted(
             (o for o in State.obstacles if o.right > dino.left), key=lambda o: o.x
         )
-        dx = [(o.left - dino.right) / WIDTH for o in ahead[:2]]
+        dx = [(o.left - dino.right) / State.speed for o in ahead[:2]]
         dx += [NO_OBSTACLE] * (2 - len(dx))
 
         return np.array(
@@ -106,7 +106,7 @@ class DinoEnv:
                 dx[1],
                 (GROUND_Y - dino.bottom) / JUMP_APEX,
                 State.dino_velo / abs(JUMP_VELO),
-                State.speed / MAX_SPEED,
+                State.speed / GAP_SCALE_SPEED,
             ]
         )
 
