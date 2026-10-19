@@ -2,7 +2,8 @@
 
 Dino game (`src/dinosolver/__init__.py`) plus a neuroevolution trainer that learns to play it.
 
-    uv run dinosolver      # play by hand
+    uv run dinoplay                  # play by hand
+    uv run dinosolver [model.npy]    # watch a saved agent at 60 FPS (default best.npy)
     uv run dinotrain       # train, live tile grid
     uv run dinotrain --display none --generations 100
 
@@ -20,6 +21,7 @@ The best genome of each generation is saved to `--out` (`best.npy`). Press `q` i
 | `pool.py` | Worker processes (game state is process-global); stream snapshots |
 | `trainer.py` | Generation loop |
 | `render.py`, `viewer.py` | Draw snapshots with the game's `draw()` into one window |
+| `watch.py` | Real-time playback of a saved agent |
 
 Episodes are capped at 300 s of game time. Workers run unthrottled, so tiles are a sampled fast-forward, not real time.
 
